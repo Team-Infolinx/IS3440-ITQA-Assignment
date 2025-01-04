@@ -46,20 +46,13 @@ jobs:
           npx cypress run --reporter mocha-allure-reporter --reporter-options allureResults=allure-results || true
           echo "Cypress tests completed (even with failures)"
 
-      # Step 7: Stop the API server if it's running (assuming it was started in the background)
-      - name: Stop API Server
-        run: |
-          # Find the API server process and kill it
-          pkill -f "node"  # Or replace "node" with the command used to start the API server (e.g., "npm start")
-        if: always()  # This ensures it runs even if previous steps fail
-
-      # Step 8: Always generate Allure report, even if tests failed
+      # Step 7: Always generate Allure report, even if tests failed
       - name: Generate Allure report
         run: |
           allure generate allure-results --clean
         if: always()  # Ensures it runs even if the previous step fails
 
-      # Step 9: Deploy Allure Report to GitHub Pages
+      # Step 8: Deploy Allure Report to GitHub Pages
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:

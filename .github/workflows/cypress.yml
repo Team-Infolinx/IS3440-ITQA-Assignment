@@ -40,14 +40,18 @@ jobs:
           npm install mocha-allure-reporter allure-cypress --save-dev
           npm install @bahmutov/cypress-esbuild-preprocessor @badeball/cypress-cucumber-preprocessor --save-dev
 
-      # Step 6: Run Cypress tests with Allure reporter
+      # Run Cypress tests and generate Allure results
       - name: Run Cypress tests
         run: |
           npx cypress run --reporter mocha-allure-reporter --reporter-options allureResults=allure-results
+          echo "Cypress tests completed"
 
-      # Step 7: Generate the Allure report
-      - name: Generate Allure Report
-        run: allure generate allure-results --clean
+      # Always generate Allure report, even if tests failed
+      - name: Generate Allure report
+        run: |
+          allure generate allure-results --clean
+          allure open allure-report # This step can be omitted if you want to push it to GitHub Pages
+        if: always()  # This ensures it runs even if previous steps fail
 
       # Step 8: Deploy Allure Report to GitHub Pages
       - name: Deploy Allure Report to GitHub Pages

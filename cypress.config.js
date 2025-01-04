@@ -25,13 +25,17 @@ async function setupNodeEvents(on, config) {
 
 module.exports = defineConfig({
   e2e: {
-    specPattern: "**/*.feature",  
+    specPattern: "**/*.feature",
     setupNodeEvents,
     baseUrl: "https://opensource-demo.orangehrmlive.com/",
-    baseUrlAPI: "http://localhost:7081",  
+    baseUrlAPI: "http://localhost:7081",  // Change this if needed
     chromeWebSecurity: false,
     env: {
-      allureResultsPath: "allure-results",  
+      allureResultsPath: "./allure-results",  // Output directory for Allure results
+    },
+    reporter: "json",
+    reporterOptions: {
+      output: "./results/results.json",  // JSON output path for Cypress results
     },
   },
 });

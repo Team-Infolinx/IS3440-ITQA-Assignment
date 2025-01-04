@@ -69,7 +69,7 @@ jobs:
 
       - name: Run Cypress Tests
         working-directory: .
-        run: npx cypress run --env allure=true
+        run: npx cypress run --reporter mocha-allure-reporter --reporter-options allureResults=allure-results
         continue-on-error: true
 
       - name: Generate Allure Report

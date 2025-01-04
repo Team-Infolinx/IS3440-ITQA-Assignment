@@ -17,7 +17,7 @@ jobs:
     services:
       api-server:
         image: openjdk:11
-        options: --network github_network_${{ github.run_id }} # Use a user-defined network
+        options: --network github_network_${{ github.run_id }}  # User-defined network
         ports:
           - 7081:7081  # Expose port 7081 from the container
         env:
@@ -25,7 +25,8 @@ jobs:
 
     steps:
       # Step 1: Check out the repository
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       # Step 2: Set up Node.js
       - name: Set up Node.js
@@ -34,13 +35,13 @@ jobs:
           node-version: '20'
 
       # Step 3: Install dependencies
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           npm ci  # Install dependencies from 'tests/package-lock.json'
           npx cypress install  # Install Cypress if not already installed
 
-      # Step 4: Create Docker network manually
-      - name: Create Docker network
+      # Step 4: Create Docker network
+      - name: Create Docker Network
         run: |
           docker network create github_network_${{ github.run_id }}  # Create a user-defined network
 
@@ -49,16 +50,16 @@ jobs:
         run: |
           docker run -d --name api-server --network github_network_${{ github.run_id }} -p 7081:7081 \
             -e "SERVER_ADDRESS=0.0.0.0" openjdk:11 java -jar ./src/api/demo-0.0.1-SNAPSHOT.jar --server.address=0.0.0.0 --server.port=7081
-          sleep 30  # Wait for 30 seconds to allow the server to start
+          sleep 30  # Wait for 30 seconds to ensure the server starts
 
       # Step 6: Run Cypress tests
-      - name: Run Cypress tests
+      - name: Run Cypress Tests
         run: |
           npx cypress run  # Run the Cypress tests
 
       # Step 7: Upload test results
-      - name: Upload test results
-        if: always()
+      - name: Upload Test Results
+        if: always()  # Ensure the results are uploaded even if tests fail
         uses: actions/upload-artifact@v3
         with:
           name: cypress-test-results
@@ -67,26 +68,32 @@ jobs:
             ./results/*.json
 
   generate-report:
-    needs: tests
+    needs: tests  # This job runs after the 'tests' job
     runs-on: ubuntu-latest
 
     steps:
       # Step 1: Check out the repository
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       # Step 2: Download test results
-      - name: Download test results
+      - name: Download Test Results
         uses: actions/download-artifact@v3
         with:
           name: cypress-test-results
           path: results
 
-      # Step 3: Generate Allure report
+      # Step 3: Install Allure Command Line Tool
+      - name: Install Allure Command Line Tool
+        run: |
+          npm install -g allure-commandline --save-dev
+
+      # Step 4: Generate Allure Report
       - name: Generate Allure Report
         run: |
           allure generate results/cypress-test-results -o results/allure-report --clean
 
-      # Step 4: Upload Allure report
+      # Step 5: Upload Allure Report as an artifact
       - name: Upload Allure Report
         uses: actions/upload-artifact@v3
         with:

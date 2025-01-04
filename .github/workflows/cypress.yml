@@ -17,7 +17,7 @@ jobs:
     services:
       api-server:
         image: openjdk:11
-        options: --network host
+        options: --network github_network_${{ github.run_id }} # Use a user-defined network
         ports:
           - 7081:7081  # Expose port 7081 from the container
         env:

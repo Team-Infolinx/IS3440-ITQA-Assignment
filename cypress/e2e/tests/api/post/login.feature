@@ -1,6 +1,6 @@
 Feature: API Testing for Login
 
-  Scenario Outline: Login with user credentials
+  Scenario Outline: Login with both admin and user credentials
     Given the user is authenticated as "<userRole>" with password "password"
     Then the response status should be 200
 

@@ -117,6 +117,3 @@ Then("the response should contain an error message for invalid book ID", () => {
   //expect(response.body).to.have.property("message");
   expect(response.body).to.equal("Invalid book ID");
 });
-
-//
-// new config

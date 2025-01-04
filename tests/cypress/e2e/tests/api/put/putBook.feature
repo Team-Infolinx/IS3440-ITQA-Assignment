@@ -42,3 +42,16 @@ Feature: Book Update API
     When the user attempts to update the book with valid data
     Then the API should return 400 status code
     And the response should contain an error message for invalid book ID
+
+  Scenario: Attempting to update a book with an already existing title
+    Given a book is created for update
+    And another book with the same title exists
+    When the user attempts to update the book with the existing title
+    Then the API should return 409 status code
+    And the response should contain an error message indicating the title is already taken
+
+  Scenario: Attempting to update a book with an empty title
+    Given a book is created for update
+    When the user attempts to update the book with an empty title
+    Then the API should return 400 status code
+    And the response should contain an error message indicating that the title is required

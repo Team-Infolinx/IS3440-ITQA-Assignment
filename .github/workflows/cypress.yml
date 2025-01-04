@@ -1,4 +1,4 @@
-name: Cypress Tests
+name: Cypress Tests with Allure Report
 
 on:
   push:
@@ -24,76 +24,64 @@ jobs:
         with:
           node-version: '20'
 
-      # Step 3: Install dependencies (including Allure dependencies)
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
-          npm ci  # Install dependencies from 'package-lock.json'
-          npm install allure-commandline --save-dev
-          npm install allure-cypress --save-dev
-          npm install mocha-allure-reporter --save-dev
-          npm install @badeball/cypress-cucumber-preprocessor --save-dev
-          npm install @bahmutov/cypress-esbuild-preprocessor --save-dev
-          npm install cypress @badeball/cypress-cucumber-preprocessor cypress-file-upload --save-dev
-          npx cypress install  # Install Cypress if not already installed
+          npm ci
+          npx cypress install  # Ensure Cypress is installed
 
-      # Step 4: Set up Java and start the API server
-      - name: Set up Java and start API Server
+      # Step 4: Set up Allure commandline
+      - name: Set up Allure commandline
+        run: npm install -g allure-commandline
+
+      # Step 5: Install additional dependencies for Allure and Cypress
+      - name: Install additional dependencies
         run: |
-          # Install Java (required to run the API server)
-          sudo apt-get install openjdk-17-jdk -y
-          # Start the API server in the background
-          nohup java -jar ./src/api/demo-0.0.1-SNAPSHOT.jar > server.log 2>&1 &
-          # Wait for the API server to be fully up and accessible
-          echo "Waiting for the API server to be ready..."
-          until curl --silent --head http://localhost:7081/api/books; do
-            echo "Server not ready yet. Retrying in 2 seconds..."
-            sleep 2
-          done
-          echo "Server is up and running."
+          npm install mocha-allure-reporter allure-cypress --save-dev
+          npm install @bahmutov/cypress-esbuild-preprocessor @badeball/cypress-cucumber-preprocessor --save-dev
 
-      # Step 5: Run Cypress tests with the mocha-allure-reporter
+      # Step 6: Run Cypress tests with Allure reporter
       - name: Run Cypress tests
         run: |
           npx cypress run --reporter mocha-allure-reporter --reporter-options allureResults=allure-results
 
-      # Step 6: List files and directories for debugging
-      - name: List files and directories
-        run: |
-          echo "Listing Allure results directory:"
-          ls -l ./allure-results/ || echo "No allure-results directory found"
+      # Step 7: Generate the Allure report
+      - name: Generate Allure Report
+        run: allure generate allure-results --clean
 
-      # Step 7: Upload test results
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v3
+      # Step 8: Deploy Allure Report to GitHub Pages
+      - name: Deploy Allure Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: cypress-test-results
-          path: ./allure-results/  # Path to Allure results
+          personal_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          publish_branch: gh-pages
 
+  # Optional: If you'd like to host using a simple webserver instead of GitHub Pages
   generate-report:
     needs: tests
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
-      - uses: actions/checkout@v4
+      - name: Check out the repository
+        uses: actions/checkout@v4
 
-      # Step 2: Download test results
-      - name: Download test results
-        uses: actions/download-artifact@v3
-        with:
-          name: cypress-test-results
-          path: results
-
-      # Step 3: Generate Allure Report
-      - name: Generate Allure Report
+      # Step 1: Install HTTP Server
+      - name: Install http-server
         run: |
-          allure generate results/cypress-test-results -o results/allure-report --clean
+          npm install -g http-server
 
-      # Step 4: Upload Allure report
+      # Step 2: Serve the Allure report locally
+      - name: Serve Allure Report
+        run: |
+          # Generate the report if not generated yet
+          allure generate allure-results --clean
+          http-server ./allure-report -p 8080 &
+
+      # Step 3: Optional - Upload Allure report artifact (for easier access)
       - name: Upload Allure Report
         uses: actions/upload-artifact@v3
         with:
           name: allure-report
-          path: results/allure-report
+          path: ./allure-report
           retention-days: 30

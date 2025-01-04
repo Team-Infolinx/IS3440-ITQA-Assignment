@@ -24,17 +24,19 @@ jobs:
         with:
           node-version: '20'
 
-      # Step 3: Install dependencies
+      # Step 3: Install dependencies (including Allure dependencies)
       - name: Install dependencies
         run: |
           npm ci  # Install dependencies from 'package-lock.json'
+          npm install allure-commandline --save-dev
+          npm install allure-cypress --save-dev
+          npm install mocha-allure-reporter --save-dev
+          npm install @badeball/cypress-cucumber-preprocessor --save-dev
+          npm install @bahmutov/cypress-esbuild-preprocessor --save-dev
+          npm install cypress @badeball/cypress-cucumber-preprocessor cypress-file-upload --save-dev
           npx cypress install  # Install Cypress if not already installed
 
-      # Step 4: Set up Allure commandline
-      - name: Set up Allure commandline
-        run: npm install -g allure-commandline
-
-      # Step 5: Install Java and start API server
+      # Step 4: Set up Java and start the API server
       - name: Set up Java and start API Server
         run: |
           # Install Java (required to run the API server)
@@ -49,28 +51,25 @@ jobs:
           done
           echo "Server is up and running."
 
-      # Step 6: Run Cypress tests (both UI and API tests)
+      # Step 5: Run Cypress tests with the mocha-allure-reporter
       - name: Run Cypress tests
         run: |
-          npx cypress run  # Run the Cypress tests
+          npx cypress run --reporter mocha-allure-reporter --reporter-options allureResults=allure-results
 
-      # Step 7: List files for debugging
+      # Step 6: List files and directories for debugging
       - name: List files and directories
         run: |
           echo "Listing Allure results directory:"
           ls -l ./allure-results/ || echo "No allure-results directory found"
-          echo "Listing Results directory:"
-          ls -l ./results/ || echo "No results directory found"
 
-      # Step 8: Upload test results
+      # Step 7: Upload test results
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: cypress-test-results
-          path: |
-            ./allure-results/  # Path to Allure results
-            ./results/results.json  # Path to JSON results
+          path: ./allure-results/  # Path to Allure results
+
   generate-report:
     needs: tests
     runs-on: ubuntu-latest

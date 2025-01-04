@@ -61,7 +61,7 @@ jobs:
           publish_branch: gh-pages        # Deploy to gh-pages branch
         if: always()  # Ensures this step runs even if tests fail
 
-  # Optional: If you'd like to host using a simple webserver instead of GitHub Pages
+  # Optional: Serve the Allure report via a simple HTTP server for local viewing (not required for GitHub Pages deployment)
   generate-report:
     needs: tests
     runs-on: ubuntu-latest
@@ -70,19 +70,19 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
-      # Step 1: Install HTTP Server
+      # Step 1: Install HTTP Server locally (optional)
       - name: Install http-server
         run: |
           npm install -g http-server
 
-      # Step 2: Serve the Allure report locally
+      # Step 2: Serve the Allure report locally (optional for local testing)
       - name: Serve Allure Report
         run: |
           # Generate the report if not generated yet
           allure generate allure-results --clean
           http-server ./allure-report -p 8080 &
 
-      # Step 3: Optional - Upload Allure report artifact (for easier access)
+      # Step 3: Optional - Upload Allure report artifact for easier access (for local testing)
       - name: Upload Allure Report
         uses: actions/upload-artifact@v3
         with:

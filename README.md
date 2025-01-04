@@ -113,14 +113,14 @@ itqa-assignment-group39/
 
 ## **👥 Contributors**
 
-| Index                       | Name                                               | GitHub Profile       |
-|-----------------------------|----------------------------------------------------|----------------------|
-| 204042N                     | Dinusha K.M                                        |                      |
-| 204113J                     | Lakshan K.A.D                                      |@lakshankd            |
-| 204129M                     | Meegoda S.Y                                        |                      |
-| 204189U                     | Sanjaya B.H                                        |                      |
-| 204191T                     | Sankalapani D.J.M.R                                |                      |
-| 204197R                     | Senevirathne Y.M.N.N                               |                      |
+| Index                       | Name                                               | 
+|-----------------------------|----------------------------------------------------|
+| 204042N                     | Dinusha K.M                                        |
+| 204113J                     | Lakshan K.A.D                                      |
+| 204129M                     | Meegoda S.Y                                        |
+| 204189U                     | Sanjaya B.H                                        |
+| 204191T                     | Sankalapani D.J.M.R                                |
+| 204197R                     | Senevirathne Y.M.N.N                               |
 
 ---
 

@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: '20'
 
-      # Step 3: Install dependencies (with `cd` into the tests directory)
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           npm ci  # Install dependencies from 'package-lock.json'
@@ -34,15 +34,13 @@ jobs:
       - name: Set up Allure commandline
         run: npm install -g allure-commandline
 
-      # Step 5: Install Java and start the API server (before running Cypress tests)
+      # Step 5: Install Java and start API server
       - name: Set up Java and start API Server
         run: |
           # Install Java (required to run the API server)
           sudo apt-get install openjdk-17-jdk -y
-
           # Start the API server in the background
           nohup java -jar ./src/api/demo-0.0.1-SNAPSHOT.jar > server.log 2>&1 &
-
           # Wait for the API server to be fully up and accessible
           echo "Waiting for the API server to be ready..."
           until curl --silent --head http://localhost:7081/api/books; do
@@ -56,16 +54,23 @@ jobs:
         run: |
           npx cypress run  # Run the Cypress tests
 
-      # Step 7: Upload test results
+      # Step 7: List files for debugging
+      - name: List files and directories
+        run: |
+          echo "Listing Allure results directory:"
+          ls -l ./allure-results/ || echo "No allure-results directory found"
+          echo "Listing Results directory:"
+          ls -l ./results/ || echo "No results directory found"
+
+      # Step 8: Upload test results
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: cypress-test-results
           path: |
-            ./tests/allure-results/
-            ./tests/results/*.json
-
+            ./allure-results/  # Path to Allure results
+            ./results/results.json  # Path to JSON results
   generate-report:
     needs: tests
     runs-on: ubuntu-latest
@@ -81,12 +86,12 @@ jobs:
           name: cypress-test-results
           path: results
 
-      # Step 3: Generate Allure report
+      # Step 3: Generate Allure Report
       - name: Generate Allure Report
         run: |
           allure generate results/cypress-test-results -o results/allure-report --clean
 
-      # Step 4: Upload the generated Allure report
+      # Step 4: Upload Allure report
       - name: Upload Allure Report
         uses: actions/upload-artifact@v3
         with:

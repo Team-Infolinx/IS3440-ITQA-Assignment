@@ -28,14 +28,10 @@ module.exports = defineConfig({
     specPattern: "**/*.feature",
     setupNodeEvents,
     baseUrl: "https://opensource-demo.orangehrmlive.com/",
-    baseUrlAPI: "http://localhost:7081",  // Change this if needed
+    baseUrlAPI: "http://localhost:7081",
     chromeWebSecurity: false,
     env: {
-      allureResultsPath: "./allure-results",  // Output directory for Allure results
-    },
-    reporter: "json",
-    reporterOptions: {
-      output: "./results/results.json",  // JSON output path for Cypress results
+      allureResultsPath: "cypress/results/allure",
     },
   },
-});
+}); 

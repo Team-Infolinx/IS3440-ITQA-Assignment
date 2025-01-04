@@ -1,4 +1,4 @@
-name: Cypress Tests
+name: Run Cypress Tests
 
 on:
   push:
@@ -14,11 +14,20 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
+    services:
+      api-server:
+        image: openjdk:11
+        options: --network host
+        ports:
+          - 7081:7081  # Expose port 7081 from the container
+        env:
+          SERVER_ADDRESS: "0.0.0.0"  # Make sure the server listens on all interfaces
+
     steps:
       # Step 1: Check out the repository
       - uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js in the root directory
+      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -31,25 +40,20 @@ jobs:
           npm ci  # Install dependencies from 'tests/package-lock.json'
           npx cypress install  # Install Cypress if not already installed
 
-      # Step 4: Set up Allure commandline
-      - name: Set up Allure commandline
-        working-directory: ./tests  # Switch to the 'tests' directory
-        run: npm install -g allure-commandline
-
-      # Step 5: Start the API server (on the correct host and port)
+      # Step 4: Start the API server
       - name: Start API Server
         working-directory: ./tests
         run: |
           nohup java -jar ./src/api/demo-0.0.1-SNAPSHOT.jar --server.address=0.0.0.0 --server.port=7081 &  # Start the API server on all interfaces
           sleep 30  # Wait for 30 seconds to allow the server to start
 
-      # Step 6: Run Cypress tests
+      # Step 5: Run Cypress tests
       - name: Run Cypress tests
-        working-directory: ./tests  # Switch to the 'tests' directory
+        working-directory: ./tests
         run: |
           npx cypress run  # Run the Cypress tests
 
-      # Step 7: Upload test results
+      # Step 6: Upload test results
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
@@ -74,12 +78,12 @@ jobs:
           name: cypress-test-results
           path: results
 
-      # Step 3: Generate combined Allure report
+      # Step 3: Generate Allure report
       - name: Generate Allure Report
         run: |
           allure generate results/cypress-test-results -o results/allure-report --clean
 
-      # Step 4: Upload combined report
+      # Step 4: Upload Allure report
       - name: Upload Allure Report
         uses: actions/upload-artifact@v3
         with:

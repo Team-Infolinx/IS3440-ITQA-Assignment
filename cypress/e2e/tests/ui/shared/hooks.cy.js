@@ -1,4 +1,4 @@
-import LoginPage from "../../page-objects/loginPage.cy";
+import LoginPage from "../../../page-objects/loginPage.cy";
 
 require('cypress-xpath');
 

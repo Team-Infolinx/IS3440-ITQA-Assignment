@@ -80,7 +80,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: cypress-test-report
-          path: .allure-report  # Download the whole report directory
+          path: allure-report  # Download the whole report directory
           expire-in: 14d  # Set expiration time for the artifact
 
       - name: Stop the Server

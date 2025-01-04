@@ -26,7 +26,6 @@ jobs:
 
       # Step 3: Install dependencies (with `cd` into the tests directory)
       - name: Install dependencies
-        working-directory: ./tests  # Switch to the 'tests' directory
         run: |
           npm ci  # Install dependencies from 'tests/package-lock.json'
           npx cypress install  # Install Cypress if not already installed

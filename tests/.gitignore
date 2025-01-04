@@ -40,3 +40,7 @@ out/
 
 # Cypress configuration overrides
 cypress/config/
+
+# Ignore Allure results and reports
+allure-report/
+allure-results/

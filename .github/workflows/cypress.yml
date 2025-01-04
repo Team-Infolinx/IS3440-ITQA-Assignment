@@ -29,7 +29,7 @@ jobs:
         run: |
           npm ci
           npx cypress install  # Ensure Cypress is installed
-
+          
       # Step 4: Set up Allure commandline
       - name: Set up Allure commandline
         run: npm install -g allure-commandline
@@ -50,38 +50,16 @@ jobs:
       - name: Generate Allure report
         run: |
           allure generate allure-results --clean
-        if: always()  # This ensures it runs even if previous steps fail
+        if: always()
 
-      # Step 8: Deploy Allure Report to GitHub Pages
-      - name: Deploy Allure Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./allure-report
-          publish_branch: gh-pages
-
-  # Optional: If you'd like to host using a simple webserver instead of GitHub Pages
-  generate-report:
-    needs: tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v4
-
-      # Step 1: Install HTTP Server
-      - name: Install http-server
+      # Step 8: Serve the Allure report locally
+      - name: Serve Allure Report Locally
         run: |
-          npm install -g http-server
-
-      # Step 2: Serve the Allure report locally
-      - name: Serve Allure Report
-        run: |
-          # Generate the report if not generated yet
-          allure generate allure-results --clean
+          npm install -g http-server  # Install http-server
           http-server ./allure-report -p 8080 &
-
-      # Step 3: Optional - Upload Allure report artifact (for easier access)
+        # Note: You could use "nohup" if needed to run this in the background, e.g., `nohup http-server ./allure-report -p 8080 &`
+        
+      # Step 9: Optionally, Upload Allure report as artifact for easy access
       - name: Upload Allure Report
         uses: actions/upload-artifact@v3
         with:

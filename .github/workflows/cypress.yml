@@ -26,10 +26,10 @@ jobs:
 
       # Step 3: Install dependencies (with `cd` into the tests directory)
       - name: Install dependencies
+        working-directory: ./tests  # Switch to the 'tests' directory
         run: |
           npm ci  # Install dependencies from 'tests/package-lock.json'
           npx cypress install  # Install Cypress if not already installed
-
       # Step 4: Set up Allure commandline
       - name: Set up Allure commandline
         run: npm install -g allure-commandline
@@ -38,18 +38,11 @@ jobs:
       - name: Start API Server
         run: |
           nohup java -jar ./src/api/demo-0.0.1-SNAPSHOT.jar &  # Start the API server in the background
-          # Wait for the API server to become available
-          while ! curl --silent --fail http://localhost:7081/; do
-            echo "Waiting for API server to be available..."
-            sleep 5
-          done
-          echo "API server is up and running!"
-
+          sleep 30  # Wait for 30 seconds to allow the server to start
       # Step 6: Run Cypress tests
       - name: Run Cypress tests
         run: |
           npx cypress run  # Run the Cypress tests
-
       # Step 7: Upload test results
       - name: Upload test results
         if: always()
@@ -59,7 +52,6 @@ jobs:
           path: |
             ./allure-results/
             ./results/*.json
-
   generate-report:
     needs: tests
     runs-on: ubuntu-latest
@@ -79,7 +71,6 @@ jobs:
       - name: Generate Allure Report
         run: |
           allure generate results/cypress-test-results -o results/allure-report --clean
-
       # Step 4: Upload combined report
       - name: Upload Allure Report
         uses: actions/upload-artifact@v3

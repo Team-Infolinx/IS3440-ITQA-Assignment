@@ -113,6 +113,7 @@ Then("the response should contain an error message for invalid data", () => {
 });
 
 Then("the response should contain an error message for missing book ID", () => {
+  expect(response.body.message).to.have("Missing book ID");
   expect(response.body).to.equal("Missing book ID");
 });
 

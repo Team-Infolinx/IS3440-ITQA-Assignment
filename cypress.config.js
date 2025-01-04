@@ -27,7 +27,10 @@ module.exports = defineConfig({
     specPattern: "**/*.feature",
     setupNodeEvents,
     baseUrl: "https://opensource-demo.orangehrmlive.com/",
-    baseUrlAPI: "http://localhost:7081",
+    baseUrlAPI: "http://api-server:7081",  // Use Docker service name here
     chromeWebSecurity: false,
+    env: {
+      allureResultsPath: "cypress/results/allure",
+    },
   },
 });

@@ -4,7 +4,7 @@ Feature: Assign Claim
   So that I can process their expense claim
 
   Background:
-    Given I am logged in as an admin
+    Given I am logged in as an admin user
 
   Scenario: Assign a new claim to an employee
     Given I am on the assign claim page

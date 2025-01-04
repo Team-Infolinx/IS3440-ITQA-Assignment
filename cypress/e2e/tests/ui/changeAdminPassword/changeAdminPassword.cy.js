@@ -1,15 +1,8 @@
-import {Given, Then, When} from "@badeball/cypress-cucumber-preprocessor";
-import LoginAsValidUser from "../hooks.cy";
+import {Then, When} from "@badeball/cypress-cucumber-preprocessor";
+import LoginAsValidUser from "../shared/hooks.cy";
 import 'cypress-xpath';
 import ChangePassword from "../../../page-objects/changePasswordPage.cy";
 import LoginPage from "../../../page-objects/loginPage.cy";
-
-const TOAST = '[class*="toast"]'
-
-
-Given("I am logged in as a valid user", () => {
-    LoginAsValidUser('', '');
-});
 
 When("I click on dropdown of the profile", () => {
     ChangePassword.clickDropdown();

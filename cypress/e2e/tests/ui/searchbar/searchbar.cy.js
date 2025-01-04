@@ -1,7 +1,7 @@
 import {Then, When} from "@badeball/cypress-cucumber-preprocessor";
 import Searchbar from '../../../page-objects/searchbar.cy';
 
-const {default: LoginAsValidUser} = require('../hooks.cy');
+const {default: LoginAsValidUser} = require('../shared/hooks.cy');
 
 
 When("I navigate to the search bar", () => {

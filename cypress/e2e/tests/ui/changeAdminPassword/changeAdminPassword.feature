@@ -1,9 +1,8 @@
 Feature: Change password
 
-  Background:
-    Given I am logged in as a valid user
 
   Scenario: Change the password
+    Given I am logged in as a valid user
     When I click on dropdown of the profile
     And I click on item called change password
     And I type the current password as "admin123"

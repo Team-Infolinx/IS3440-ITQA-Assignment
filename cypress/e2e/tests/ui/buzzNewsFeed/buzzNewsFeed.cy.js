@@ -1,11 +1,8 @@
-import {Given, Then, When} from "@badeball/cypress-cucumber-preprocessor";
+import {Then, When} from "@badeball/cypress-cucumber-preprocessor";
 import BuzzPage from "../../../page-objects/buzzPage.cy";
 
-const {default: LoginAsValidUser} = require('../hooks.cy');
+const {default: LoginAsValidUser} = require('../shared/hooks.cy');
 
-Given("I am logged in", () => {
-    LoginAsValidUser('', '');
-});
 
 When("I navigate to the Buzz page", () => {
     BuzzPage.navigateToBuzzPage();

@@ -1,12 +1,9 @@
-import {Given, Then, When} from "@badeball/cypress-cucumber-preprocessor";
+import {Then, When} from "@badeball/cypress-cucumber-preprocessor";
 import 'cypress-xpath';
 import DeleteUserPageCy from "../../../page-objects/deleteUserPage.cy";
 
-const {default: LoginAsValidUser} = require('../hooks.cy');
+const {default: LoginAsValidUser} = require('../shared/hooks.cy');
 
-Given('I am logged in as an admin', () => {
-    LoginAsValidUser('', '');
-});
 
 When('I Click on Admin item in Dashboard', () => {
     // cy.xpath(`//li[contains(@class, 'oxd-main-menu-item-wrapper')]//a[span[text()='Admin']]`)

@@ -5,6 +5,6 @@ Feature: Logout functionality
   So that I can end my session securely
 
   Scenario: Successful logout
-    Given I am logged into the application
+    Given I am logged in as a valid user
     When I click on the logout button
     Then I should see the login page

@@ -14,15 +14,6 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
-    services:
-      api-server:
-        image: openjdk:11
-        options: --network github_network_${{ github.run_id }} # Use a user-defined network
-        ports:
-          - 7081:7081  # Expose port 7081 from the container
-        env:
-          SERVER_ADDRESS: "0.0.0.0"  # Ensure the server listens on all interfaces
-
     steps:
       # Step 1: Check out the repository
       - uses: actions/checkout@v4
@@ -33,24 +24,30 @@ jobs:
         with:
           node-version: '20'
 
-      # Step 3: Install dependencies (with `cd` into the tests directory)
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           npm ci  # Install dependencies from 'tests/package-lock.json'
           npx cypress install  # Install Cypress if not already installed
 
-      # Step 4: Start the API server
+      # Step 4: Set up a Docker network for API server
+      - name: Create Docker network
+        run: |
+          docker network create github_network_${{ github.run_id }}  # Create a user-defined network
+
+      # Step 5: Start the API server in a Docker container
       - name: Start API Server
         run: |
-          nohup java -jar ./src/api/demo-0.0.1-SNAPSHOT.jar --server.address=0.0.0.0 --server.port=7081 &  # Start the API server on all interfaces
+          docker run -d --name api-server --network github_network_${{ github.run_id }} -p 7081:7081 \
+            -e "SERVER_ADDRESS=0.0.0.0" openjdk:11 java -jar ./src/api/demo-0.0.1-SNAPSHOT.jar --server.address=0.0.0.0 --server.port=7081
           sleep 30  # Wait for 30 seconds to allow the server to start
 
-      # Step 5: Run Cypress tests
+      # Step 6: Run Cypress tests
       - name: Run Cypress tests
         run: |
           npx cypress run  # Run the Cypress tests
 
-      # Step 6: Upload test results
+      # Step 7: Upload test results
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3

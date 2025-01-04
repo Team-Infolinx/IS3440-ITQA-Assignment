@@ -14,6 +14,15 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
+    services:
+      api-server:
+        image: openjdk:11
+        options: --network github_network_${{ github.run_id }} # Use a user-defined network
+        ports:
+          - 7081:7081  # Expose port 7081 from the container
+        env:
+          SERVER_ADDRESS: "0.0.0.0"  # Ensure the server listens on all interfaces
+
     steps:
       # Step 1: Check out the repository
       - uses: actions/checkout@v4
@@ -30,12 +39,12 @@ jobs:
           npm ci  # Install dependencies from 'tests/package-lock.json'
           npx cypress install  # Install Cypress if not already installed
 
-      # Step 4: Set up a Docker network for API server
+      # Step 4: Create Docker network manually
       - name: Create Docker network
         run: |
           docker network create github_network_${{ github.run_id }}  # Create a user-defined network
 
-      # Step 5: Start the API server in a Docker container
+      # Step 5: Start the API server
       - name: Start API Server
         run: |
           docker run -d --name api-server --network github_network_${{ github.run_id }} -p 7081:7081 \

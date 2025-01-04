@@ -32,13 +32,13 @@ jobs:
 
       # Step 4: Set up Allure commandline
       - name: Set up Allure commandline
-        run: npm install -g allure-commandline
+        run: npm install allure-commandline
 
       # Step 5: Install additional dependencies for Allure and Cypress
       - name: Install additional dependencies
         run: |
           npm install mocha-allure-reporter allure-cypress --save-dev
-          npm install @bahmutov/cypress-esbuild-preprocessor @badeball/cypress-cucumber-preprocessor --save-dev
+          npm install @bahmutov/cypress-esbuild-preprocessor @badeball/cypress-cucumber-preprocessor cypress-file-upload --save-dev
 
       # Run Cypress tests and generate Allure results
       - name: Run Cypress tests

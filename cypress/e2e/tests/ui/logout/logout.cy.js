@@ -1,10 +1,5 @@
-import {Given, Then, When} from "@badeball/cypress-cucumber-preprocessor";
-import LoginAsValidUser from "../hooks.cy";
+import {Then, When} from "@badeball/cypress-cucumber-preprocessor";
 import LogoutPage from "../../../page-objects/logoutPage.cy";
-
-Given("I am logged into the application", () => {
-    LoginAsValidUser('', '');
-});
 
 When("I click on the logout button", () => {
     LogoutPage.clickLogoutButton();

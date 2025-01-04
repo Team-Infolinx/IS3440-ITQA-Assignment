@@ -1,4 +1,4 @@
-import {Then, When} from "@badeball/cypress-cucumber-preprocessor";
+import {When} from "@badeball/cypress-cucumber-preprocessor";
 import 'cypress-xpath';
 import DeleteEmployee from "../../../page-objects/deleteEmployeePage.cy";
 

@@ -1,13 +1,8 @@
 import {Given, Then, When} from "@badeball/cypress-cucumber-preprocessor";
 import LoginPage from "../../../page-objects/loginPage.cy";
-import LoginAsValidUser from "../hooks.cy";
 
 Given("I am on the login page", () => {
     LoginPage.visit();
-});
-
-Given("I am a valid user", () => {
-    LoginAsValidUser('', ''); // Implement user login logic here
 });
 
 When("I enter username with {string}", (username) => {

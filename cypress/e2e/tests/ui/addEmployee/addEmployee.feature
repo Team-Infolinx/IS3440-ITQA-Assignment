@@ -1,9 +1,9 @@
 Feature: Add employee
-
-  Background:
-    Given I am logged in as an admin
+  As an admin
+  I want to add an employee
 
   Scenario: Add employee
+    Given I am logged in as an admin user
     When I Click on PIM item in Dashboard
     And I click on Add button
     And I enter First name with "Salinda"

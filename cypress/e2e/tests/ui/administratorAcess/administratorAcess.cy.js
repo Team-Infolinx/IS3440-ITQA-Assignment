@@ -18,7 +18,7 @@ When("I enter admin access password with {string}", (password) => {
 
 When('I leave the password field empty', function () {
     AdminAccessPage.clearPassword();
-    AdminAccessPage.submit();  // Clears the password field
+    AdminAccessPage.submit();
 });
 
 Then("I should see an error message saying {string}", (errorMessage) => {
@@ -26,7 +26,7 @@ Then("I should see an error message saying {string}", (errorMessage) => {
 });
 
 Then("I should see Maintenance Purge Record", () => {
-    AdminAccessPage.verifyNavigationToMaintenancePurgeRecord(); // Correct function call
+    AdminAccessPage.verifyNavigationToMaintenancePurgeRecord();
 });
 
 

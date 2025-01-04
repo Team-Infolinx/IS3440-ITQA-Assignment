@@ -1,7 +1,7 @@
 import {Then, When} from "@badeball/cypress-cucumber-preprocessor";
 import PerformanceTrackerView from "../../../page-objects/performanceTrackerViewPage.cy";
 
-const {default: LoginAsValidUser} = require('../hooks.cy');
+const {default: LoginAsValidUser} = require('../shared/hooks.cy');
 
 When("I navigate to the {string} page", () => {
     PerformanceTrackerView.navigateToPerformancePage();

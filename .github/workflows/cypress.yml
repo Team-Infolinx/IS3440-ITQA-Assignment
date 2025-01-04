@@ -46,13 +46,20 @@ jobs:
           npx cypress run --reporter mocha-allure-reporter --reporter-options allureResults=allure-results || true
           echo "Cypress tests completed (even with failures)"
 
-      # Step 7: Always generate Allure report, even if tests failed
+      # Step 7: Stop the API server if it's running (assuming it was started in the background)
+      - name: Stop API Server
+        run: |
+          # Find the API server process and kill it
+          pkill -f "node"  # Or replace "node" with the command used to start the API server (e.g., "npm start")
+        if: always()  # This ensures it runs even if previous steps fail
+
+      # Step 8: Always generate Allure report, even if tests failed
       - name: Generate Allure report
         run: |
           allure generate allure-results --clean
         if: always()  # Ensures it runs even if the previous step fails
 
-      # Step 8: Deploy Allure Report to GitHub Pages
+      # Step 9: Deploy Allure Report to GitHub Pages
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -60,32 +67,3 @@ jobs:
           publish_dir: ./allure-report   # Folder where the Allure report is generated
           publish_branch: gh-pages        # Deploy to gh-pages branch
         if: always()  # Ensures this step runs even if tests fail
-
-  # Optional: Serve the Allure report via a simple HTTP server for local viewing (not required for GitHub Pages deployment)
-  generate-report:
-    needs: tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v4
-
-      # Step 1: Install HTTP Server locally (optional)
-      - name: Install http-server
-        run: |
-          npm install -g http-server
-
-      # Step 2: Serve the Allure report locally (optional for local testing)
-      - name: Serve Allure Report
-        run: |
-          # Generate the report if not generated yet
-          allure generate allure-results --clean
-          http-server ./allure-report -p 8080 &
-
-      # Step 3: Optional - Upload Allure report artifact for easier access (for local testing)
-      - name: Upload Allure Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: allure-report
-          path: ./allure-report
-          retention-days: 30

@@ -17,6 +17,7 @@ async function setupNodeEvents(on, config) {
     })
   );
 
+  // Setup Allure Reporter
   allureCypress(on, config);
 
   return config;
@@ -24,13 +25,13 @@ async function setupNodeEvents(on, config) {
 
 module.exports = defineConfig({
   e2e: {
-    specPattern: "**/*.feature",
+    specPattern: "**/*.feature",  
     setupNodeEvents,
     baseUrl: "https://opensource-demo.orangehrmlive.com/",
-    baseUrlAPI: "http://api-server:7081",  // Use Docker service name here
+    baseUrlAPI: "http://localhost:7081",  
     chromeWebSecurity: false,
     env: {
-      allureResultsPath: "cypress/results/allure",
+      allureResultsPath: "allure-results",  
     },
   },
 });

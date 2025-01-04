@@ -58,12 +58,12 @@ jobs:
           path: server.log
 
 
-      - name: Install Node.js and Dependencies for API Tests
+      - name: Install Node.js and Dependencies
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      - name: Install Dependencies for API Tests
+      - name: Install Dependencies
         working-directory: .
         run: npm install
 
@@ -74,7 +74,7 @@ jobs:
 
       - name: Generate Allure Report
         working-directory:  .
-        run: npx run allure generate allure-results --clean -o allure-report
+        run: npx cypress run --reporter mocha-allure-reporter --reporter-options allureResults=allure-results
 
       - name: Upload  Allure Report as Artifact
         uses: actions/upload-artifact@v3

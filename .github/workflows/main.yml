@@ -74,7 +74,7 @@ jobs:
 
       - name: Generate Allure Report
         working-directory:  .
-        run: npx cypress run --reporter mocha-allure-reporter --reporter-options allureResults=allure-results
+        run: npx allure generate allure-results --clean -o allure-report
 
       - name: Upload  Allure Report as Artifact
         uses: actions/upload-artifact@v3

@@ -1,3 +1,6 @@
+// cypress.config.js
+require("dotenv").config(); // Load environment variables from .env
+
 const { defineConfig } = require("cypress");
 const createBundler = require("@bahmutov/cypress-esbuild-preprocessor");
 const {
@@ -27,11 +30,11 @@ module.exports = defineConfig({
   e2e: {
     specPattern: "**/*.feature",
     setupNodeEvents,
-    baseUrl: "https://opensource-demo.orangehrmlive.com/",
-    baseUrlAPI: "http://localhost:7081",
+    baseUrl: process.env.CYPRESS_baseUrl,
+    baseUrlAPI: process.env.CYPRESS_baseUrlAPI,
     chromeWebSecurity: false,
     env: {
-      allureResultsPath: "cypress/results/allure",
+      allureResultsPath: process.env.CYPRESS_allureResultsPath,
     },
   },
-}); 
+});
